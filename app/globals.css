@@ -1,0 +1,278 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Design tokens — single source of truth for the visual system.
+ * ------------------------------------------------------------------ */
+:root {
+  color-scheme: dark;
+
+  --ink: #06070a;
+  --ink-soft: #0a0c10;
+  --surface: #0e1116;
+  --surface-2: #14181f;
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  --fg: #eef1ec;
+  --muted: #8e9793;
+  --muted-strong: #b9c1bc;
+
+  --lime: #c6f24d;
+  --lime-deep: #8fbf2e;
+  --violet: #7c6cff;
+  --blue: #4d7cff;
+
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+
+  --color-lime: var(--lime);
+  --color-lime-deep: var(--lime-deep);
+  --color-violet: var(--violet);
+  --color-blue: var(--blue);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  --font-display: var(--font-display), var(--font-sans), ui-sans-serif,
+    system-ui, sans-serif;
+
+  --radius-card: var(--radius);
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-aurora: aurora 18s ease-in-out infinite alternate;
+  --animate-float-slow: float-slow 14s ease-in-out infinite;
+  --animate-spin-slow: spin 26s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes aurora {
+  0% {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate3d(4%, 3%, 0) scale(1.12);
+    opacity: 0.8;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) rotate(4deg);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6.5rem;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--ink);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--lime);
+    color: #0a0c10;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #23282f;
+    border-radius: 999px;
+    border: 2px solid var(--ink);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #333a44;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Print — the resume page turns into a clean light document.
+ * Every utility above resolves through these custom properties, so
+ * re-mapping the tokens is enough to flip the whole page to paper mode.
+ * ------------------------------------------------------------------ */
+@media print {
+  :root {
+    color-scheme: light;
+
+    --ink: #ffffff;
+    --ink-soft: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f3f4f6;
+    --line: rgba(0, 0, 0, 0.14);
+    --line-strong: rgba(0, 0, 0, 0.3);
+
+    --fg: #0d1014;
+    --muted: #4a5158;
+    --muted-strong: #262b31;
+
+    --lime: #2f6b00;
+    --lime-deep: #245200;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  p,
+  li {
+    orphans: 2;
+    widows: 2;
+  }
+
+  img {
+    break-inside: avoid;
+  }
+
+  .print-url::after {
+    content: " (" attr(href) ")";
+    font-size: 0.72em;
+    font-weight: 400;
+    color: #4a5158;
+    word-break: break-all;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Utilities
+ * ------------------------------------------------------------------ */
+@utility ambient-grid {
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 92px 92px;
+}
+
+@utility font-serif-display {
+  font-family: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--fg) 0%,
+    var(--fg) 45%,
+    var(--lime) 78%,
+    var(--blue) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility hairline-top {
+  border-top: 1px solid var(--line);
+}
+
+/* Film grain overlay */
+@utility noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Reduced motion: keep the site beautiful but calm. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
